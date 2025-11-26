@@ -10,42 +10,48 @@ class Image:
         self.MainContour = None
         
     def Process(self):
-	#이미지를 흑백으로 변환한 뒤 Threshold 값을 기준으로 0 또는 1로 값을 정한다
+	#Hough Line Transform으로 직선 검출
         imgray = cv2.cvtColor(self.image,cv2.COLOR_BGR2GRAY) #Convert to Gray Scale
         ret, thresh = cv2.threshold(imgray,180,255,cv2.THRESH_BINARY_INV) #Get Threshold
 
-        self.contours, _ = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #Get contour
-        
-        self.prev_MC = self.MainContour
-        if self.contours:
-            self.MainContour = max(self.contours, key=cv2.contourArea)
-        
-            self.height, self.width  = self.image.shape[:2]
+        # Hough Line Transform - 직선 검출
+        lines = cv2.HoughLinesP(thresh, rho=1, theta=np.pi/180, threshold=50,
+                                minLineLength=40, maxLineGap=50)
 
-            self.middleX = int(self.width/2) #Get X coordenate of the middle point
-            self.middleY = int(self.height/2) #Get Y coordenate of the middle point
-            
-            self.prev_cX = self.contourCenterX
-            if self.getContourCenter(self.MainContour) != 0:
-                self.contourCenterX = self.getContourCenter(self.MainContour)[0]
-                if abs(self.prev_cX-self.contourCenterX) > 5:
-                    self.correctMainContour(self.prev_cX)
-            else:
-                self.contourCenterX = 0
-            
-            self.dir =  int((self.middleX-self.contourCenterX) * self.getContourExtent(self.MainContour))
-            
-            #윤곽선은 초록색, 무게중심은 흰색 원, 그림의 중앙 지점은 빨간 원으로 표시
-            cv2.drawContours(self.image,self.MainContour,-1,(0,255,0),3) #Draw Contour GREEN
-            cv2.circle(self.image, (self.contourCenterX, self.middleY), 7, (255,255,255), -1) #Draw dX circle WHITE
-            cv2.circle(self.image, (self.middleX, self.middleY), 3, (0,0,255), -1) #Draw middle circle RED
-            
+        if lines is not None and len(lines) > 0:
+            # 가장 아래쪽(y값이 큰) 라인 선택 - 가까운 라인에 집중
+            bottom_line = max(lines, key=lambda line: (line[0][1] + line[0][3]) / 2)
+            x1, y1, x2, y2 = bottom_line[0]
+
+            # 라인의 중심점 계산
+            line_center_x = (x1 + x2) // 2
+            line_center_y = (y1 + y2) // 2
+        
+            self.height, self.width = self.image.shape[:2]
+            self.middleX = int(self.width/2)
+            self.middleY = int(self.height/2)
+
+            # 라인 중심을 contourCenterX로 저장
+            self.contourCenterX = line_center_x
+
+            # 검출된 라인 그리기 (초록색)
+            cv2.line(self.image, (x1, y1), (x2, y2), (0, 255, 0), 3)
+
+            # 라인 중심점 표시 (흰색 원)
+            cv2.circle(self.image, (line_center_x, line_center_y), 7, (255, 255, 255), -1)
+
+            # 화면 중앙점 표시 (빨간 원)
+            cv2.circle(self.image, (self.middleX, self.middleY), 3, (0, 0, 255), -1)
+
+            # 편차 표시
             font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.putText(self.image,str(self.middleX-self.contourCenterX),(self.contourCenterX+20, self.middleY), font, 1,(200,0,200),2,cv2.LINE_AA)
-            cv2.putText(self.image,"Weight:%.3f"%self.getContourExtent(self.MainContour),(self.contourCenterX+20, self.middleY+35), font, 0.5,(200,0,200),1,cv2.LINE_AA)
-            return [self.contourCenterX, self.middleY]
+            deviation = self.middleX - line_center_x
+            cv2.putText(self.image, str(deviation), (line_center_x + 20, line_center_y),
+                       font, 1, (200, 0, 200), 2, cv2.LINE_AA)
 
-        # contours가 없을 때 기본값 반환
+            return [line_center_x, line_center_y]
+
+        # 라인을 찾지 못한 경우 기본값 반환
         height, width = self.image.shape[:2]
         return [width // 2, height // 2]
 

@@ -13,8 +13,8 @@ WIDTH = 320
 HEIGHT = 240
 
 TOLERANCE = 145
-TURN_MAX = 190
-TURN_MID = 90
+TURN_MAX = 60
+TURN_MID = 15
 
 # cmd define
 direction = 0
