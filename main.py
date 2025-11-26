@@ -69,8 +69,8 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
     # 가까운 곳(y5, y6)은 낮은 가중치
     master_point = (y1 * 2.0 + y2 * 1.5 + y3 * 1.0 + y4 * 0.7 + y5 * 0.5 + y6 * 0.3) / 6.0
 
-    # back
-    if num_valid < 2:
+    # back - 라인을 못 찾거나 경로 이탈 시 후진
+    if num_valid < 2 or abs(master_point) > 120:
         direction = 'B'		# 후진
     else:
         direction = 'G'		# 전진
