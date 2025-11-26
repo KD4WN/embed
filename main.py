@@ -12,9 +12,9 @@ from pyzbar.pyzbar import decode
 WIDTH = 320
 HEIGHT = 240
 
-TOLERANCE = 120  # 줄임 - 더 엄격하게
-TURN_MAX = 70    # 늘림 - 큰 회전 더 쉽게
-TURN_MID = 25    # 늘림 - 작은 회전 더 쉽게
+TOLERANCE = 120
+TURN_MAX = 40    # 더 낮춤 - 급회전 쉽게
+TURN_MID = 15    # 더 낮춤 - 작은 회전 쉽게
 
 # cmd define
 direction = 0
@@ -67,6 +67,9 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
     
     # 간단한 가중 평균 - 하단(가까운 곳)에 더 높은 가중치
     master_point = (y1 * 0.5 + y2 * 0.7 + y3 * 0.9 + y4 * 1.1 + y5 * 1.3 + y6 * 1.5) / 6.0
+
+    # master_point 증폭 - 회전 반응 높이기
+    master_point = master_point * 1.5
 
     # back - 라인을 못 찾거나 경로 이탈 시 후진
     if num_valid < 2 or abs(master_point) > 120:
