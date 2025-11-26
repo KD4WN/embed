@@ -115,9 +115,9 @@ camera = Picamera2()
 camera_config = camera.create_preview_configuration(
     main={"size": (320, 240)},
     controls={"FrameRate": 30,
-             "Brightness": 0.2,
-             "Contrast": 1.8,
-              "ExposureTime": 2500}
+             "Brightness": 0.4,  # 0-1.0 scale # 낮을수록 밝은 환경에서 좋음
+             "Contrast": 1.4,    # 2x default contrast
+              "ExposureTime": 4000}  # 100ms exposure time # 노출 시간: 밝은 환경에서는 낮아야함
 )
 camera.configure(camera_config)
 camera.start()
