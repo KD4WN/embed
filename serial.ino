@@ -1,8 +1,8 @@
-// motor speed
-#define MAX_VEL 255
-#define MID_VEL 200
+// motor speed (속도 낮춤 - 천천히 조금씩 움직임)
+#define MAX_VEL 180  // 255 -> 180 (약 70% 속도)
+#define MID_VEL 140  // 200 -> 140 (약 70% 속도)
 
-#define BACK_VEL 180
+#define BACK_VEL 120  // 180 -> 120 (약 67% 속도)
 
 #define SMALL_DELAY_TIME 170
 #define TINY_DELAY_TIME 120

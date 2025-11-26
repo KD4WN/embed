@@ -21,7 +21,7 @@ class Image:
         # 검은색 라인 검출을 위한 HSV 범위 설정
         # 검은색: 낮은 명도(V)를 가진 모든 색상
         lower_black = np.array([0, 0, 0])
-        upper_black = np.array([180, 255, 110])  # V값 110 이하를 검은색으로 인식 (그림자 제외)
+        upper_black = np.array([180, 255, 65])  # V값 65 이하 - 완전히 검은색만 인식 (매우 엄격)
 
         # 마스크 생성
         mask = cv2.inRange(hsv, lower_black, upper_black)

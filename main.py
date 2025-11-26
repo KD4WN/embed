@@ -90,11 +90,22 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
 
     cmd = ("%c\n" % (direction)).encode('ascii')
 
-    print(">>> master_point:%d, cmd:%s" % (master_point, cmd))
+    # 방향 표시
+    direction_map = {
+        'G': '직진 (GO)',
+        'B': '후진 (BACK)',
+        'r': '우회전-소 (Right-small)',
+        'R': '우회전-대 (Right-BIG)',
+        'l': '좌회전-소 (Left-small)',
+        'L': '좌회전-대 (Left-BIG)'
+    }
+    direction_text = direction_map.get(direction, '알 수 없음')
+
+    print(">>> master_point:%d, 방향:%s" % (master_point, direction_text))
 
     ser.write(cmd)
     print("send")
-    time.sleep(0.1)  # 통신 주기 단축 (0.5초 -> 0.1초)
+    time.sleep(0.4)  # 아두이노 처리 시간 고려한 통신 주기 (초당 약 3회)
 
 ##################################################################################################
 
