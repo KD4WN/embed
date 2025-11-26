@@ -13,8 +13,8 @@ WIDTH = 320
 HEIGHT = 240
 
 TOLERANCE = 145
-TURN_MAX = 70   # 큰 회전 임계값 - 더 쉽게 큰 회전 발생
-TURN_MID = 25   # 작은 회전 임계값 - 더 쉽게 작은 회전 발생
+TURN_MAX = 190
+TURN_MID = 90
 
 # cmd define
 direction = 0
@@ -65,10 +65,14 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
         num_valid -= 1
         y6 = 0
     
-    # 간단한 가중 평균 - 하단 슬라이스(가까운 곳)에 더 높은 가중치
-    # y6이 가장 아래(카메라에 가까움), y1이 가장 위(카메라에서 멀음)
-    # 하단 슬라이스를 더 신뢰함
-    master_point = (y1 * 0.5 + y2 * 0.7 + y3 * 0.9 + y4 * 1.1 + y5 * 1.3 + y6 * 1.5) / 6.0
+    master_point = 2.65 * (y1 * 0.7 + y2 * 0.85 + y3 + y4 * 1.1 + y5 * 1.2 + y6 * 1.35) / (num_valid + 0.1)
+
+    master_point += y1 * 0.5
+    master_point += y2 * 0.4
+    master_point += y3 * 0.3
+    master_point -= y4 * 0.4
+    master_point -= y5 * 0.5
+    master_point -= y6 * 0.6
 
     # back
     if num_valid < 2:
@@ -86,27 +90,18 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
 
     cmd = ("%c\n" % (direction)).encode('ascii')
 
-    # Direction display
-    direction_map = {
-        'G': 'GO (Forward)',
-        'B': 'BACK',
-        'r': 'Right-small',
-        'R': 'Right-BIG',
-        'l': 'Left-small',
-        'L': 'Left-BIG'
-    }
-    direction_text = direction_map.get(direction, 'Unknown')
-
-    print(">>> master_point:%d, Direction:%s" % (master_point, direction_text))
-
+    print(">>> master_point:%d, cmd:%s" % (master_point, cmd))
+    
     ser.write(cmd)
     print("send")
-    time.sleep(0.4)  # 아두이노 처리 시간 고려한 통신 주기 (초당 약 3회)
+    time.sleep(0.5)
 
 ##################################################################################################
 
 # setting arduino
-ser = serial.Serial('/dev/ttyACM0', 9600)
+base_path = '/dev/serial/by-id/'
+by_id = 'usb-Arduino_Srl_Arduino_Uno_7543931373735161F152-if00'
+ser = serial.Serial(base_path+by_id, 9600)
 
 print('start')
 time.sleep(1)
@@ -122,9 +117,9 @@ camera = Picamera2()
 camera_config = camera.create_preview_configuration(
     main={"size": (320, 240)},
     controls={"FrameRate": 30,
-             "Brightness": 0.2,  # 0-1.0 scale # 밝은 환경용으로 낮춤
-             "Contrast": 1.8,    # 대비를 높여 라인 인식 향상
-              "ExposureTime": 2500}  # 밝은 환경에서 노출 시간 감소
+             "Brightness": 0.4,  # 0-1.0 scale # 낮을수록 밝은 환경에서 좋음
+             "Contrast": 1.4,    # 2x default contrast
+              "ExposureTime": 4000}  # 100ms exposure time # 노출 시간: 밝은 환경에서는 낮아야함
 )
 camera.configure(camera_config)
 camera.start()
@@ -136,8 +131,7 @@ try:
 	while True:
 		# Capture frame
 		frame = camera.capture_array("main")
-		frame = cv2.flip(frame, -1)  # 카메라 이미지를 180도 뒤집습니다 (카메라 거꾸로 설치됨)
-
+        
 		# QR 코드 인식
 		codes = decode(frame)
 		# 디코딩된 데이터가 있으면 출력
