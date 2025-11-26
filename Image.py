@@ -43,7 +43,11 @@ class Image:
             font = cv2.FONT_HERSHEY_SIMPLEX
             cv2.putText(self.image,str(self.middleX-self.contourCenterX),(self.contourCenterX+20, self.middleY), font, 1,(200,0,200),2,cv2.LINE_AA)
             cv2.putText(self.image,"Weight:%.3f"%self.getContourExtent(self.MainContour),(self.contourCenterX+20, self.middleY+35), font, 0.5,(200,0,200),1,cv2.LINE_AA)
-        return [self.contourCenterX, self.middleY]
+            return [self.contourCenterX, self.middleY]
+
+        # contours가 없을 때 기본값 반환
+        height, width = self.image.shape[:2]
+        return [width // 2, height // 2]
 
     def getContourCenter(self, contour):
         M = cv2.moments(contour)
