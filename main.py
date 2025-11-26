@@ -13,8 +13,8 @@ WIDTH = 320
 HEIGHT = 240
 
 TOLERANCE = 145
-TURN_MAX = 190
-TURN_MID = 90
+TURN_MAX = 100  # 큰 회전 임계값 낮춤 (더 민감하게)
+TURN_MID = 40   # 작은 회전 임계값 낮춤 (더 빨리 반응)
 
 # cmd define
 direction = 0
@@ -115,9 +115,9 @@ camera = Picamera2()
 camera_config = camera.create_preview_configuration(
     main={"size": (320, 240)},
     controls={"FrameRate": 30,
-             "Brightness": 0.4,  # 0-1.0 scale # 낮을수록 밝은 환경에서 좋음
-             "Contrast": 1.4,    # 2x default contrast
-              "ExposureTime": 4000}  # 100ms exposure time # 노출 시간: 밝은 환경에서는 낮아야함
+             "Brightness": 0.2,  # 0-1.0 scale # 밝은 환경용으로 낮춤
+             "Contrast": 1.8,    # 대비를 높여 라인 인식 향상
+              "ExposureTime": 2500}  # 밝은 환경에서 노출 시간 감소
 )
 camera.configure(camera_config)
 camera.start()
@@ -129,7 +129,8 @@ try:
 	while True:
 		# Capture frame
 		frame = camera.capture_array("main")
-        
+		frame = cv2.flip(frame, -1)  # 카메라 이미지를 180도 뒤집습니다 (카메라 거꾸로 설치됨)
+
 		# QR 코드 인식
 		codes = decode(frame)
 		# 디코딩된 데이터가 있으면 출력
