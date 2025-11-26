@@ -90,18 +90,18 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
 
     cmd = ("%c\n" % (direction)).encode('ascii')
 
-    # 방향 표시
+    # Direction display
     direction_map = {
-        'G': '직진 (GO)',
-        'B': '후진 (BACK)',
-        'r': '우회전-소 (Right-small)',
-        'R': '우회전-대 (Right-BIG)',
-        'l': '좌회전-소 (Left-small)',
-        'L': '좌회전-대 (Left-BIG)'
+        'G': 'GO (Forward)',
+        'B': 'BACK',
+        'r': 'Right-small',
+        'R': 'Right-BIG',
+        'l': 'Left-small',
+        'L': 'Left-BIG'
     }
-    direction_text = direction_map.get(direction, '알 수 없음')
+    direction_text = direction_map.get(direction, 'Unknown')
 
-    print(">>> master_point:%d, 방향:%s" % (master_point, direction_text))
+    print(">>> master_point:%d, Direction:%s" % (master_point, direction_text))
 
     ser.write(cmd)
     print("send")
