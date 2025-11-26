@@ -94,7 +94,7 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
     
     ser.write(cmd)
     print("send")
-    time.sleep(0.5)
+    time.sleep(0.4)
 
 ##################################################################################################
 
@@ -129,7 +129,6 @@ try:
 	while True:
 		# Capture frame
 		frame = camera.capture_array("main")
-		frame = cv2.flip(frame, -1)  # 카메라 이미지를 180도 뒤집습니다 (카메라 거꾸로 설치됨)
 
 		# QR 코드 인식
 		codes = decode(frame)
