@@ -91,10 +91,10 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
     cmd = ("%c\n" % (direction)).encode('ascii')
 
     print(">>> master_point:%d, cmd:%s" % (master_point, cmd))
-    
+
     ser.write(cmd)
     print("send")
-    time.sleep(0.5)
+    time.sleep(0.1)  # 통신 주기 단축 (0.5초 -> 0.1초)
 
 ##################################################################################################
 
