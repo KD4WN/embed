@@ -14,18 +14,11 @@ class Image:
         imgray = cv2.cvtColor(self.image,cv2.COLOR_BGR2GRAY) #Convert to Gray Scale
 
         # Gaussian Blur로 노이즈 제거
-        blur = cv2.GaussianBlur(imgray, (7, 7), 0)
+        blur = cv2.GaussianBlur(imgray, (5, 5), 0)
 
-        # Adaptive Threshold: C 값 높임 (그림자 무시)
+        # Adaptive Threshold: 지역적으로 threshold 적용
         thresh = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                       cv2.THRESH_BINARY_INV, 15, 8)
-
-        # Morphological Opening: 작은 노이즈(그림자) 제거
-        kernel = np.ones((3, 3), np.uint8)
-        thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel, iterations=1)
-
-        # Morphological Closing: 라인의 작은 끊김 메우기
-        thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel, iterations=1)
+                                       cv2.THRESH_BINARY_INV, 11, 2)
 
         self.contours, _ = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #Get contour
         
