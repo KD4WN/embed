@@ -65,14 +65,9 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
         num_valid -= 1
         y6 = 0
     
-    master_point = 2.65 * (y1 * 0.7 + y2 * 0.85 + y3 + y4 * 1.1 + y5 * 1.2 + y6 * 1.35) / (num_valid + 0.1)
-
-    master_point += y1 * 0.5
-    master_point += y2 * 0.4
-    master_point += y3 * 0.3
-    master_point -= y4 * 0.4
-    master_point -= y5 * 0.5
-    master_point -= y6 * 0.6
+    # 먼 곳(y1, y2)에 높은 가중치 - 미리미리 커브 대비
+    # 가까운 곳(y5, y6)은 낮은 가중치
+    master_point = (y1 * 2.0 + y2 * 1.5 + y3 * 1.0 + y4 * 0.7 + y5 * 0.5 + y6 * 0.3) / 6.0
 
     # back
     if num_valid < 2:
