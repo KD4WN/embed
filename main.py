@@ -129,7 +129,8 @@ try:
 	while True:
 		# Capture frame
 		frame = camera.capture_array("main")
-        
+		frame = cv2.flip(frame, -1)  # 카메라 이미지를 180도 뒤집습니다 (카메라 거꾸로 설치됨)
+
 		# QR 코드 인식
 		codes = decode(frame)
 		# 디코딩된 데이터가 있으면 출력
