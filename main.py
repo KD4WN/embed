@@ -13,8 +13,8 @@ WIDTH = 320
 HEIGHT = 240
 
 TOLERANCE = 145
-TURN_MAX = 100  # 큰 회전 임계값 낮춤 (더 민감하게)
-TURN_MID = 40   # 작은 회전 임계값 낮춤 (더 빨리 반응)
+TURN_MAX = 70   # 큰 회전 임계값 - 더 쉽게 큰 회전 발생
+TURN_MID = 25   # 작은 회전 임계값 - 더 쉽게 작은 회전 발생
 
 # cmd define
 direction = 0
