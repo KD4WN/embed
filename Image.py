@@ -10,15 +10,9 @@ class Image:
         self.MainContour = None
         
     def Process(self):
-	#이미지를 흑백으로 변환한 뒤 Adaptive Threshold로 조명 불균일 문제 해결
+	#이미지를 흑백으로 변환한 뒤 Threshold 값을 기준으로 0 또는 1로 값을 정한다
         imgray = cv2.cvtColor(self.image,cv2.COLOR_BGR2GRAY) #Convert to Gray Scale
-
-        # Gaussian Blur로 노이즈 제거
-        blur = cv2.GaussianBlur(imgray, (5, 5), 0)
-
-        # Adaptive Threshold: 지역적으로 threshold 적용
-        thresh = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
-                                       cv2.THRESH_BINARY_INV, 11, 2)
+        ret, thresh = cv2.threshold(imgray,180,255,cv2.THRESH_BINARY_INV) #Get Threshold
 
         self.contours, _ = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #Get contour
         
