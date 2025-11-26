@@ -12,11 +12,7 @@ class Image:
     def Process(self):
 	#이미지를 흑백으로 변환한 뒤 Threshold 값을 기준으로 0 또는 1로 값을 정한다
         imgray = cv2.cvtColor(self.image,cv2.COLOR_BGR2GRAY) #Convert to Gray Scale
-
-        # Gaussian Blur로 노이즈 제거
-        blur = cv2.GaussianBlur(imgray, (5, 5), 0)
-
-        ret, thresh = cv2.threshold(blur,150,255,cv2.THRESH_BINARY_INV) #Get Threshold
+        ret, thresh = cv2.threshold(imgray,100,255,cv2.THRESH_BINARY_INV) #Get Threshold
 
         self.contours, _ = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #Get contour
 
