@@ -65,14 +65,10 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
         num_valid -= 1
         y6 = 0
     
-    master_point = 2.65 * (y1 * 0.7 + y2 * 0.85 + y3 + y4 * 1.1 + y5 * 1.2 + y6 * 1.35) / (num_valid + 0.1)
-
-    master_point += y1 * 0.5
-    master_point += y2 * 0.4
-    master_point += y3 * 0.3
-    master_point -= y4 * 0.4
-    master_point -= y5 * 0.5
-    master_point -= y6 * 0.6
+    # 간단한 가중 평균 - 하단 슬라이스(가까운 곳)에 더 높은 가중치
+    # y6이 가장 아래(카메라에 가까움), y1이 가장 위(카메라에서 멀음)
+    # 하단 슬라이스를 더 신뢰함
+    master_point = (y1 * 0.5 + y2 * 0.7 + y3 * 0.9 + y4 * 1.1 + y5 * 1.3 + y6 * 1.5) / 6.0
 
     # back
     if num_valid < 2:
