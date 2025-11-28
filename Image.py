@@ -14,17 +14,17 @@ class Image:
         imgray = cv2.cvtColor(self.image,cv2.COLOR_BGR2GRAY) #Convert to Gray Scale
         ret, thresh = cv2.threshold(imgray,100,255,cv2.THRESH_BINARY_INV) #Get Threshold
 
-        self.contours, _ = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE) #Get contour
-
+        self.contours, _ = cv2.findContours(thresh,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)[-2:] #Get contour
+        
         self.prev_MC = self.MainContour
         if self.contours:
             self.MainContour = max(self.contours, key=cv2.contourArea)
-
+        
             self.height, self.width  = self.image.shape[:2]
 
             self.middleX = int(self.width/2) #Get X coordenate of the middle point
             self.middleY = int(self.height/2) #Get Y coordenate of the middle point
-
+            
             self.prev_cX = self.contourCenterX
             if self.getContourCenter(self.MainContour) != 0:
                 self.contourCenterX = self.getContourCenter(self.MainContour)[0]
@@ -32,22 +32,18 @@ class Image:
                     self.correctMainContour(self.prev_cX)
             else:
                 self.contourCenterX = 0
-
+            
             self.dir =  int((self.middleX-self.contourCenterX) * self.getContourExtent(self.MainContour))
-
+            
             #윤곽선은 초록색, 무게중심은 흰색 원, 그림의 중앙 지점은 빨간 원으로 표시
             cv2.drawContours(self.image,self.MainContour,-1,(0,255,0),3) #Draw Contour GREEN
             cv2.circle(self.image, (self.contourCenterX, self.middleY), 7, (255,255,255), -1) #Draw dX circle WHITE
             cv2.circle(self.image, (self.middleX, self.middleY), 3, (0,0,255), -1) #Draw middle circle RED
-
+            
             font = cv2.FONT_HERSHEY_SIMPLEX
             cv2.putText(self.image,str(self.middleX-self.contourCenterX),(self.contourCenterX+20, self.middleY), font, 1,(200,0,200),2,cv2.LINE_AA)
             cv2.putText(self.image,"Weight:%.3f"%self.getContourExtent(self.MainContour),(self.contourCenterX+20, self.middleY+35), font, 0.5,(200,0,200),1,cv2.LINE_AA)
-            return [self.contourCenterX, self.middleY]
-
-        # contours가 없을 때 기본값 반환
-        height, width = self.image.shape[:2]
-        return [width // 2, height // 2]
+        return [self.contourCenterX, self.middleY]
 
     def getContourCenter(self, contour):
         M = cv2.moments(contour)

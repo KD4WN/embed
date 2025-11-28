@@ -13,8 +13,8 @@ WIDTH = 320
 HEIGHT = 240
 
 TOLERANCE = 145
-TURN_MAX = 70
-TURN_MID = 25
+TURN_MAX = 190
+TURN_MID = 90
 
 # cmd define
 direction = 0
@@ -65,8 +65,14 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
         num_valid -= 1
         y6 = 0
     
-    # 간단한 가중 평균 - 하단(가까운 곳)에 더 높은 가중치
-    master_point = (y1 * 0.5 + y2 * 0.7 + y3 * 0.9 + y4 * 1.1 + y5 * 1.3 + y6 * 1.5) / 6.0
+    master_point = 2.65 * (y1 * 0.7 + y2 * 0.85 + y3 + y4 * 1.1 + y5 * 1.2 + y6 * 1.35) / (num_valid + 0.1)
+
+    master_point += y1 * 0.5
+    master_point += y2 * 0.4
+    master_point += y3 * 0.3
+    master_point -= y4 * 0.4
+    master_point -= y5 * 0.5
+    master_point -= y6 * 0.6
 
     # back
     if num_valid < 2:
@@ -88,12 +94,14 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
     
     ser.write(cmd)
     print("send")
-    time.sleep(0.4)
+    time.sleep(0.5)
 
 ##################################################################################################
 
 # setting arduino
-ser = serial.Serial('/dev/ttyACM0', 9600)
+base_path = '/dev/serial/by-id/'
+by_id = 'usb-Arduino__www.arduino.cc__0043_75830333438351B03031-if00'
+ser = serial.Serial(base_path+by_id, 9600)
 
 print('start')
 time.sleep(1)
@@ -123,7 +131,7 @@ try:
 	while True:
 		# Capture frame
 		frame = camera.capture_array("main")
-
+        
 		# QR 코드 인식
 		codes = decode(frame)
 		# 디코딩된 데이터가 있으면 출력
@@ -151,13 +159,23 @@ try:
 		i += 1
 		print(i)
 		get_cmd(Points[0][0], Points[1][0], Points[2][0], Points[3][0], Points[4][0], Points[5][0])
+		
+		try :
+		    cv2.imshow('frame', fm)
+		    
+		    if cv2.waitKey(1) & 0xFF == ord('q') : break
+			
+		except cv2.error:
+		    pass
 
-		# Display the resulting frame
-		cv2.imshow('frame', fm)
 
-		if cv2.waitKey(1) & 0xFF == ord('q'):
-			print("Stopped!")
-			break
+		
+		#cv2.imshow('frame', fm)
+
+		#if cv2.waitKey(1) & 0xFF == ord('q'):
+		#	print("Stopped!")
+		#	break
+		
 
 except KeyboardInterrupt:
     print("Program stopped by user")

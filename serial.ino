@@ -1,13 +1,14 @@
+#include	<AFMotor.h>
+
 // motor speed
 #define MAX_VEL 255
 #define MID_VEL 200
 
 #define BACK_VEL 180
 
-#define SMALL_DELAY_TIME 170
-#define TINY_DELAY_TIME 120
+#define SMALL_DELAY_TIME 80  // 줄어든 회전 시간 (원래 170)
+#define TINY_DELAY_TIME 50   // 줄어든 직진 시간 (원래 120)
 
-#include	<AFMotor.h>
 
 /*
 motor pin number
@@ -15,7 +16,7 @@ a: right motor
 b: left motor
 */
 
-AF_DCMotor	a(3);
+AF_DCMotor	a(1);
 AF_DCMotor	b(4);
 
 /*
@@ -27,6 +28,7 @@ if the delay time is longer, the wheel operation time is longer.
 void setup()
 {
 	Serial.begin(9600);
+
 	a.setSpeed(200);
 	b.setSpeed(200);
 
@@ -62,12 +64,17 @@ void test()
 	delay(1000);
 }
 
+void FrontFucntion() {
+		a.run(FORWARD);
+  	b.run(FORWARD);
+}
+
 void mainFunction()
 {
 	char DataToRead[2];
 	DataToRead[1] = '\n';
 	
-	Serial.readBytesUntil(char(13),DataToRead, 2);
+	Serial.readBytesUntil('\n',DataToRead, 2);
 	char direction = DataToRead[0];
 	
 	int i = 1;
@@ -94,28 +101,28 @@ void mainFunction()
 			b.setSpeed(BACK_VEL);
 			delay(SMALL_DELAY_TIME);
 			break;
-		case 'L':
+		case 'R':
      	 	a.run(FORWARD);
       		b.run(FORWARD);
 			a.setSpeed(MAX_VEL);
 			b.setSpeed(0);
 			delay(SMALL_DELAY_TIME);
 			break;
-		case 'R':
+		case 'L':
 			a.run(FORWARD);
       		b.run(FORWARD);
 			a.setSpeed(0);
 			b.setSpeed(MAX_VEL);
 			delay(SMALL_DELAY_TIME);
 			break;
-		case 'l':
+		case 'r':
 			a.run(FORWARD);
      		b.run(FORWARD);
 			a.setSpeed(MID_VEL);
 			b.setSpeed(0);
 			delay(SMALL_DELAY_TIME);
 			break;
-		case 'r':
+		case 'l':
 			a.run(FORWARD);
       		b.run(FORWARD);
 			a.setSpeed(0);
@@ -137,7 +144,7 @@ void mainFunction()
     }
   	a.setSpeed(0);
   	b.setSpeed(0);
-	delay(300);
+	delay(300); // 원래 300
 	Serial.println(direction);
 }
 
