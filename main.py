@@ -147,7 +147,8 @@ try:
 				qr_cmd = "S\n".encode('ascii')
 				ser.write(qr_cmd)
 				print(f"send {qr_cmd}")
-				time.sleep(0.7)
+				time.sleep(3.0)  # 3초 동안 정지
+			continue  # 라인 트래킹 건너뛰기
 
 
 		# Ensure BGR format for OpenCV compatibility

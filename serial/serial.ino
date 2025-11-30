@@ -4,11 +4,11 @@
 #define MAX_VEL 255
 #define MID_VEL 200
 
-#define BACK_VEL 120  // 후진 속도 (천천히)
+#define BACK_VEL 200  // 후진 속도
 
 #define SMALL_DELAY_TIME 150  // 회전 시간
 #define TINY_DELAY_TIME 120   // 직진 시간
-#define BACK_DELAY_TIME 80    // 후진 시간 (짧게)
+#define BACK_DELAY_TIME 80    // 후진 시간
 
 
 /*
