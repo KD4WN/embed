@@ -26,53 +26,53 @@ def in_tolerance(n):
         return False
     return True
 
-def get_cmd(y1, y2, y3, y4, y5, y6):
-    print(f"y1: {y1}")
-    print(f"y2: {y2}")
-    print(f"y3: {y3}")
-    print(f"y4: {y4}")
-    print(f"y5: {y5}")
-    print(f"y6: {y6}")
+def get_cmd(x1, x2, x3, x4, x5, x6):
+    print(f"x1: {x1}")
+    print(f"x2: {x2}")
+    print(f"x3: {x3}")
+    print(f"x4: {x4}")
+    print(f"x5: {x5}")
+    print(f"x6: {x6}")
     num_valid = 6
-    
-    y1 -= WIDTH/2
-    y2 -= WIDTH/2
-    y3 -= WIDTH/2
-    y4 -= WIDTH/2
-    y5 -= WIDTH/2
-    y6 -= WIDTH/2
+
+    x1 -= WIDTH/2
+    x2 -= WIDTH/2
+    x3 -= WIDTH/2
+    x4 -= WIDTH/2
+    x5 -= WIDTH/2
+    x6 -= WIDTH/2
     
     master_point = 0
     
     # +: right
     # -: left
-    if in_tolerance(y1) == False:
+    if in_tolerance(x1) == False:
         num_valid -= 1
-        y1 = 0
-    if in_tolerance(y2) == False:
+        x1 = 0
+    if in_tolerance(x2) == False:
         num_valid -= 1
-        y2 = 0
-    if in_tolerance(y3) == False:
+        x2 = 0
+    if in_tolerance(x3) == False:
         num_valid -= 1
-        y3 = 0
-    if in_tolerance(y4) == False:
+        x3 = 0
+    if in_tolerance(x4) == False:
         num_valid -= 1
-        y4 = 0
-    if in_tolerance(y5) == False:
+        x4 = 0
+    if in_tolerance(x5) == False:
         num_valid -= 1
-        y5 = 0
-    if in_tolerance(y6) == False:
+        x5 = 0
+    if in_tolerance(x6) == False:
         num_valid -= 1
-        y6 = 0
-    
-    master_point = 2.65 * (y1 * 0.7 + y2 * 0.85 + y3 + y4 * 1.1 + y5 * 1.2 + y6 * 1.35) / (num_valid + 0.1)
+        x6 = 0
 
-    master_point += y1 * 0.5
-    master_point += y2 * 0.4
-    master_point += y3 * 0.3
-    master_point -= y4 * 0.4
-    master_point -= y5 * 0.5
-    master_point -= y6 * 0.6
+    master_point = 2.65 * (x1 * 0.7 + x2 * 0.85 + x3 + x4 * 1.1 + x5 * 1.2 + x6 * 1.35) / (num_valid + 0.1)
+
+    master_point += x1 * 0.5
+    master_point += x2 * 0.4
+    master_point += x3 * 0.3
+    master_point -= x4 * 0.4
+    master_point -= x5 * 0.5
+    master_point -= x6 * 0.6
 
     # back
     if num_valid < 2:

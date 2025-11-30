@@ -16,7 +16,7 @@ a: right motor
 b: left motor
 */
 
-AF_DCMotor	a(1);
+AF_DCMotor	a(3);
 AF_DCMotor	b(4);
 
 /*
@@ -83,68 +83,52 @@ void mainFunction()
 	
 	switch(direction){
 		case 'S':
+			a.run(RELEASE);
+			b.run(RELEASE);
 			a.setSpeed(0);
 			b.setSpeed(0);
-			delay(SMALL_DELAY_TIME);
 			break;
 		case 'G':
-      		a.run(FORWARD);
-      		b.run(FORWARD);
+      		a.run(BACKWARD);
+      		b.run(BACKWARD);
 			a.setSpeed(MAX_VEL);
 			b.setSpeed(MAX_VEL);
-			delay(TINY_DELAY_TIME);
 			break;
 		case 'B':
-			a.run(BACKWARD);
-      		b.run(BACKWARD);
+			a.run(FORWARD);
+      		b.run(FORWARD);
 			a.setSpeed(BACK_VEL);
 			b.setSpeed(BACK_VEL);
-			delay(SMALL_DELAY_TIME);
 			break;
 		case 'R':
-     	 	a.run(FORWARD);
-      		b.run(FORWARD);
+     	 	a.run(BACKWARD);
+      		b.run(BACKWARD);
 			a.setSpeed(MAX_VEL);
-			b.setSpeed(0);
-			delay(SMALL_DELAY_TIME);
+			b.setSpeed(MID_VEL);
 			break;
 		case 'L':
-			a.run(FORWARD);
-      		b.run(FORWARD);
-			a.setSpeed(0);
+			a.run(BACKWARD);
+      		b.run(BACKWARD);
+			a.setSpeed(MID_VEL);
 			b.setSpeed(MAX_VEL);
-			delay(SMALL_DELAY_TIME);
 			break;
 		case 'r':
-			a.run(FORWARD);
-     		b.run(FORWARD);
-			a.setSpeed(MID_VEL);
-			b.setSpeed(0);
-			delay(SMALL_DELAY_TIME);
+			a.run(BACKWARD);
+     		b.run(BACKWARD);
+			a.setSpeed(MAX_VEL);
+			b.setSpeed(MID_VEL);
 			break;
 		case 'l':
-			a.run(FORWARD);
-      		b.run(FORWARD);
-			a.setSpeed(0);
-			b.setSpeed(MID_VEL);
-			delay(SMALL_DELAY_TIME);
+			a.run(BACKWARD);
+      		b.run(BACKWARD);
+			a.setSpeed(MID_VEL);
+			b.setSpeed(MAX_VEL);
 			break;
 		default:
-			a.setSpeed(0);
-      		b.setSpeed(0);
+			a.run(RELEASE);
+			b.run(RELEASE);
 			return;
     }
-	if (direction == 'R' || direction == 'L')
-	{
-		delay(20);
-    }
-    else if(direction =='B')
-	{
-		delay(100);
-    }
-  	a.setSpeed(0);
-  	b.setSpeed(0);
-	delay(300); // 원래 300
 	Serial.println(direction);
 }
 
