@@ -143,10 +143,13 @@ try:
 		# 디코딩된 데이터가 있으면 출력
 		if codes:
 			for code in codes:
-				print("QR 코드 데이터:", code.data.decode('utf-8'))
+				try:
+					print("QR detected:", code.data.decode('utf-8'))
+				except:
+					print("QR detected")
 				qr_cmd = "S\n".encode('ascii')
 				ser.write(qr_cmd)
-				print(f"send {qr_cmd}")
+				print("send stop command")
 				time.sleep(3.0)  # 3초 동안 정지
 			continue  # 라인 트래킹 건너뛰기
 
