@@ -132,16 +132,22 @@ camera.start()
 
 time.sleep(0.1)
 
+# QR 코드 인식 쿨다운
+last_qr_time = 0
+QR_COOLDOWN = 5.0  # QR 인식 후 5초 동안 재인식 방지
+
 try:
 	i = 0
 	while True:
 		# Capture frame
 		frame = camera.capture_array("main")
-        
+
 		# QR 코드 인식
 		codes = decode(frame)
+		current_time = time.time()
+
 		# 디코딩된 데이터가 있으면 출력
-		if codes:
+		if codes and (current_time - last_qr_time) > QR_COOLDOWN:
 			for code in codes:
 				try:
 					print("QR detected:", code.data.decode('utf-8'))
@@ -150,6 +156,7 @@ try:
 				qr_cmd = "S\n".encode('ascii')
 				ser.write(qr_cmd)
 				print("send stop command")
+				last_qr_time = current_time
 				time.sleep(3.0)  # 3초 동안 정지
 			continue  # 라인 트래킹 건너뛰기
 
