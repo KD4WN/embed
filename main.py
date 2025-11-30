@@ -35,34 +35,42 @@ def get_cmd(x1, x2, x3, x4, x5, x6):
     print(f"x6: {x6}")
     num_valid = 6
 
+    # 각 구역에서 선이 실제로 감지되었는지 확인
+    if x1 == 0:
+        num_valid -= 1
+    if x2 == 0:
+        num_valid -= 1
+    if x3 == 0:
+        num_valid -= 1
+    if x4 == 0:
+        num_valid -= 1
+    if x5 == 0:
+        num_valid -= 1
+    if x6 == 0:
+        num_valid -= 1
+
     x1 -= WIDTH/2
     x2 -= WIDTH/2
     x3 -= WIDTH/2
     x4 -= WIDTH/2
     x5 -= WIDTH/2
     x6 -= WIDTH/2
-    
+
     master_point = 0
-    
+
     # +: right
     # -: left
     if in_tolerance(x1) == False:
-        num_valid -= 1
         x1 = 0
     if in_tolerance(x2) == False:
-        num_valid -= 1
         x2 = 0
     if in_tolerance(x3) == False:
-        num_valid -= 1
         x3 = 0
     if in_tolerance(x4) == False:
-        num_valid -= 1
         x4 = 0
     if in_tolerance(x5) == False:
-        num_valid -= 1
         x5 = 0
     if in_tolerance(x6) == False:
-        num_valid -= 1
         x6 = 0
 
     master_point = 2.65 * (x1 * 0.7 + x2 * 0.85 + x3 + x4 * 1.1 + x5 * 1.2 + x6 * 1.35) / (num_valid + 0.1)
