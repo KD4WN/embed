@@ -8,6 +8,8 @@ class Image:
         self.image = None
         self.contourCenterX = 0
         self.MainContour = None
+        self.middleY = 0
+        self.middleX = 0
         
     def Process(self):
 	#이미지를 흑백으로 변환한 뒤 Threshold 값을 기준으로 0 또는 1로 값을 정한다
