@@ -99,9 +99,7 @@ def get_cmd(y1, y2, y3, y4, y5, y6):
 ##################################################################################################
 
 # setting arduino
-base_path = '/dev/serial/by-id/'
-by_id = 'usb-Arduino__www.arduino.cc__0043_75830333438351B03031-if00'
-ser = serial.Serial(base_path+by_id, 9600)
+ser = serial.Serial('/dev/ttyACM0', 9600)
 
 print('start')
 time.sleep(1)
