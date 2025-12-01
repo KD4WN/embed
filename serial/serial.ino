@@ -1,13 +1,13 @@
 #include	<AFMotor.h>
 
 // motor speed
-#define MAX_VEL 255
-#define MID_VEL 200
+#define MAX_VEL 200
+#define MID_VEL 150
 
 #define BACK_VEL 200  // 후진 속도
 
-#define SMALL_DELAY_TIME 150  // 회전 시간
-#define TINY_DELAY_TIME 120   // 직진 시간
+#define SMALL_DELAY_TIME 120  // 회전 시간
+#define TINY_DELAY_TIME 100   // 직진 시간
 #define BACK_DELAY_TIME 80    // 후진 시간
 
 
@@ -66,88 +66,88 @@ void test()
 }
 
 void FrontFucntion() {
-		a.run(FORWARD);
-  	b.run(FORWARD);
+	a.run(FORWARD);
+	b.run(FORWARD);
 }
 
 void mainFunction()
 {
-	char DataToRead[2];
-	DataToRead[1] = '\n';
-	
-	Serial.readBytesUntil('\n',DataToRead, 2);
-	char direction = DataToRead[0];
-	
-	int i = 1;
-	while(DataToRead[i] != '\n' && i < 2) 
-		i++;
-	
+	// 시리얼 데이터가 없으면 리턴
+	if (Serial.available() == 0) {
+		return;
+	}
+
+	// 버퍼에 있는 가장 최신 명령만 읽기 (오래된 명령 무시)
+	// 최대 50개까지만 읽어서 성능 보장
+	char direction = '\0';
+	int readCount = 0;
+	while(Serial.available() > 0 && readCount < 50) {
+		char c = Serial.read();
+		if (c != '\n' && c != '\r') {
+			direction = c;
+		}
+		readCount++;
+	}
+
+	// 남은 버퍼 데이터는 모두 클리어
+	while(Serial.available() > 0) {
+		Serial.read();
+	}
+
+	// 유효한 명령이 없으면 리턴
+	if (direction == '\0') {
+		return;
+	}
+
 	switch(direction){
 		case 'S':
 			a.run(RELEASE);
 			b.run(RELEASE);
 			a.setSpeed(0);
 			b.setSpeed(0);
-			delay(SMALL_DELAY_TIME);
 			break;
 		case 'G':
-      		a.run(BACKWARD);
-      		b.run(BACKWARD);
+			a.run(BACKWARD);
+			b.run(BACKWARD);
 			a.setSpeed(MAX_VEL);
 			b.setSpeed(MAX_VEL);
-			delay(TINY_DELAY_TIME);
 			break;
 		case 'B':
 			a.run(FORWARD);
-      		b.run(FORWARD);
+			b.run(FORWARD);
 			a.setSpeed(BACK_VEL);
 			b.setSpeed(BACK_VEL);
 			delay(BACK_DELAY_TIME);
 			break;
 		case 'R':
-     	 	a.run(BACKWARD);
-      		b.run(BACKWARD);
+			a.run(BACKWARD);
+			b.run(BACKWARD);
 			a.setSpeed(MAX_VEL);
 			b.setSpeed(0);
-			delay(SMALL_DELAY_TIME);
 			break;
 		case 'L':
 			a.run(BACKWARD);
-      		b.run(BACKWARD);
+			b.run(BACKWARD);
 			a.setSpeed(0);
 			b.setSpeed(MAX_VEL);
-			delay(SMALL_DELAY_TIME);
 			break;
 		case 'r':
 			a.run(BACKWARD);
-     		b.run(BACKWARD);
+			b.run(BACKWARD);
 			a.setSpeed(MAX_VEL);
 			b.setSpeed(0);
-			delay(SMALL_DELAY_TIME);
 			break;
 		case 'l':
 			a.run(BACKWARD);
-      		b.run(BACKWARD);
+			b.run(BACKWARD);
 			a.setSpeed(0);
 			b.setSpeed(MAX_VEL);
-			delay(SMALL_DELAY_TIME);
 			break;
 		default:
 			a.run(RELEASE);
 			b.run(RELEASE);
 			return;
-    }
-	if (direction == 'R' || direction == 'L')
-	{
-		delay(20);
-    }
-    else if(direction =='B')
-	{
-		delay(100);
-    }
-  	a.setSpeed(0);
-  	b.setSpeed(0);
-	delay(300);
+	}
 	Serial.println(direction);
 }
 
@@ -155,4 +155,5 @@ void loop()
 {
 	// test();
 	mainFunction();
+	delay(10);  // CPU 과부하 방지 및 안정적인 시리얼 통신
 }
