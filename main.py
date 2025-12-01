@@ -99,10 +99,9 @@ def get_cmd(x1, x2, x3, x4, x5, x6):
     cmd = ("%c\n" % (direction)).encode('ascii')
 
     print(">>> master_point:%d, cmd:%s" % (master_point, cmd))
-    
+
     ser.write(cmd)
     print("send")
-    time.sleep(0.5)
 
 ##################################################################################################
 
@@ -122,7 +121,7 @@ for _ in range(N_SLICES):
 camera = Picamera2()
 camera_config = camera.create_preview_configuration(
     main={"size": (320, 240)},
-    controls={"FrameRate": 30,
+    controls={"FrameRate": 10,
              "Brightness": 0.4,  # 0-1.0 scale # 낮을수록 밝은 환경에서 좋음
              "Contrast": 1.4,    # 2x default contrast
               "ExposureTime": 4000}  # 100ms exposure time # 노출 시간: 밝은 환경에서는 낮아야함
