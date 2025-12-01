@@ -102,7 +102,7 @@ def get_cmd(x1, x2, x3, x4, x5, x6):
 
     ser.write(cmd)
     print("send")
-    time.sleep(0.5)
+    time.sleep(0.03)  # 30ms만 대기 (초당 약 30번 명령 전송)
 
 ##################################################################################################
 
@@ -164,7 +164,7 @@ try:
 		# Ensure BGR format for OpenCV compatibility
 		if frame.shape[2] == 4:  # If RGBA
 			frame = cv2.cvtColor(frame, cv2.COLOR_RGBA2BGR)
-			
+
 		image = cv2.resize(frame, (320, 240))
 
 		# 이미지를 조각내서 윤곽선을 표시하게 무게중심 점을 얻는다
@@ -176,23 +176,24 @@ try:
 		i += 1
 		print(i)
 		get_cmd(Points[0][0], Points[1][0], Points[2][0], Points[3][0], Points[4][0], Points[5][0])
-		
-		try :
-		    cv2.imshow('frame', fm)
-		    
-		    if cv2.waitKey(1) & 0xFF == ord('q') : break
-			
+
+		try:
+			cv2.imshow('frame', fm)
+
+			if cv2.waitKey(1) & 0xFF == ord('q'):
+				break
+
 		except cv2.error:
-		    pass
+			pass
 
 
-		
+
 		#cv2.imshow('frame', fm)
 
 		#if cv2.waitKey(1) & 0xFF == ord('q'):
 		#	print("Stopped!")
 		#	break
-		
+
 
 except KeyboardInterrupt:
     print("Program stopped by user")
