@@ -145,9 +145,6 @@ void mainFunction()
 	{
 		delay(100);
     }
-  	a.setSpeed(0);
-  	b.setSpeed(0);
-	delay(300);
 	Serial.println(direction);
 }
 
