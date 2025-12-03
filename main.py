@@ -142,8 +142,32 @@ try:
 		# Capture frame
 		frame = camera.capture_array("main")
 
+		# QR 코드 인식을 위한 이미지 전처리
+		# 밝은 환경에서 QR 인식을 개선하기 위해 전처리 적용
+		qr_frame = frame.copy()
+		if qr_frame.shape[2] == 4:  # If RGBA
+			qr_frame = cv2.cvtColor(qr_frame, cv2.COLOR_RGBA2BGR)
+
+		# 그레이스케일 변환
+		gray_qr = cv2.cvtColor(qr_frame, cv2.COLOR_BGR2GRAY)
+
+		# 밝기 조정 (gamma correction으로 밝은 부분 억제)
+		gamma = 0.6  # 1.0보다 작으면 어두워짐
+		inv_gamma = 1.0 / gamma
+		table = np.array([((i / 255.0) ** inv_gamma) * 255 for i in range(256)]).astype("uint8")
+		gray_qr = cv2.LUT(gray_qr, table)
+
+		# Adaptive thresholding으로 QR 코드 강조
+		# 밝은 환경에서도 QR 코드의 경계를 명확하게 만듦
+		qr_enhanced = cv2.adaptiveThreshold(
+			gray_qr, 255,
+			cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+			cv2.THRESH_BINARY,
+			11, 2
+		)
+
 		# QR 코드 인식
-		codes = decode(frame)
+		codes = decode(qr_enhanced)
 		current_time = time.time()
 
 		# 디코딩된 데이터가 있으면 출력
